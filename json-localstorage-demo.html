@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tabel-acess-json</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<script type="text/javascript">
+
+/*var myObj = '{"firstname":"rajesh","lastname":"kumar"}'
+var jobj = JSON.parse(myObj);
+
+console.log(jobj.firstname);
+console.log(jobj.lastname);*/
+
+
+var studentsArray = [];
+function init(){
+
+	document.getElementById('tabelrows').innerHTML="";
+
+	if(localStorage.studentRecord)
+	{
+		studentsArray = JSON.parse(localStorage.studentRecord);
+
+		for (var i = 0; i < studentsArray.length; i++) {
+			var firstName = studentsArray[i].firstname;
+			var lastName = studentsArray[i].lastname;
+			var roolNo = studentsArray[i].roolno;
+			var subject = studentsArray[i].subject;
+
+			prepareTableCell(firstName,lastName,roolNo,subject,i);
+
+			
+		}
+	}
+}
+
+function onRegisterPressed()
+{
+	var firstName = document.getElementById('firstname').value;
+	var lastName = document.getElementById('lastname').value;
+	var roolNo = document.getElementById('roolno').value;
+	var subject = document.getElementById('subject').value;
+
+	var stdObj = {firstname:firstName,lastname:lastName,roolno:roolNo,subject:subject}
+
+	studentsArray.push(stdObj);
+	console.log(studentsArray);
+
+	localStorage.studentRecord = JSON.stringify(studentsArray);
+
+	init();
+
+	document.getElementById('firstname').value ="";
+	document.getElementById('lastname').value="";
+	document.getElementById('roolno').value="";
+	document.getElementById('subject').value="C";
+
+	//prepareTableCell(firstName,lastName,roolNo,subject);
+
+	
+}
+
+function prepareTableCell(firstName,lastName,roolNo,subject,index){
+	var table = document.getElementById('tabelrows');
+	var row = table.insertRow();
+	var firstNameCell = row.insertCell(0);
+	var lastNameCell = row.insertCell(1);
+	var rollNoCell = row.insertCell(2);
+	var subjectCell = row.insertCell(3);
+	var actionCell = row.insertCell(4);
+
+	firstNameCell.innerHTML = firstName;
+	lastNameCell.innerHTML = lastName;
+	rollNoCell.innerHTML = roolNo;
+	subjectCell.innerHTML = subject;
+	actionCell.innerHTML = '<button class="b-style-table" onclick="onEditPressed('+index+')">Edit</button><br><button class="b-style-table" onclick="deleteTabelRow('+index+')">Delete</button>'
+
+
+}
+function deleteTabelRow(index){
+	/*var table = document.getElementById('tabelrows');
+	
+		table.deleteRow(index);*/
+
+		studentsArray.splice(index,1);
+		localStorage.studentRecord=JSON.stringify(studentsArray);
+		init();	
+
+}
+
+function onEditPressed(index)
+{
+
+	var stdObje = studentsArray[index];
+
+	document.getElementById('firstname').value =stdObje.firstname;
+	document.getElementById('lastname').value=stdObje.lastname;
+	document.getElementById('roolno').value=stdObje.roolno;
+	document.getElementById('subject').value=stdObje.subject;
+
+	deleteTabelRow(index);
+
+}
+
+function ClearAll() 
+{
+	localStorage.clear();
+	location.reload();		
+}
+
+function search()
+{
+	var searchData = document.getElementById('search-data').value;
+	var flag = 1;
+	//console.log(searchData);
+	for(var i = 0; i < studentsArray.length; i++)
+	{
+		if((studentsArray[i].roolno == searchData) ||(studentsArray[i].firstname == searchData)||(studentsArray[i].lastname == searchData))
+		{
+			var stdObje = studentsArray[i];
+
+			document.getElementById('firstname').value =stdObje.firstname;
+			document.getElementById('lastname').value=stdObje.lastname;
+			document.getElementById('roolno').value=stdObje.roolno;
+			document.getElementById('subject').value=stdObje.subject;
+
+			flag = 0;	
+
+			}
+			
+		
+	}
+
+	if(flag == 1)
+	{
+		 alert("Search element not found");
+	}
+
+	
+	
+}
+
+	
+</script>
+
+<style type="text/css">
+body{
+	margin: 0;
+}
+header,footer,aside{
+	display: block;
+
+}
+h1{
+	color: white;
+	text-align: center;
+	float: middle;
+	padding-top: 30px;
+
+}
+label{
+	width: 450px;
+	display: block;
+}
+table{
+	width: 480px;
+	border-collapse: collapse;
+	margin-top: 50px;
+	margin-left: 10px;
+	margin-right: 10px;
+
+
+}
+th{
+	background: #ff9999;
+}
+th,td{
+	border: 2px solid black;
+	padding: 5px;
+	text-align: center;
+}
+.containar{
+	width: 1000px;
+	margin: 0 auto;
+}
+.headerbar{
+	width: 1000px;
+	float: left;
+	background: #003333;
+}
+.header-top{
+	background: #003333;
+	min-height: 100px;
+}
+.header-bottom{
+	background: #333300;
+	min-height: 60px;
+
+}
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: #efefef;
+  text-align: center;
+  min-height: 60px;
+}
+.leftbar{
+	width: 500px;
+	background: #009999;
+	min-height: 600px;
+	float: left;
+}
+.rightbar{
+	width: 500px;
+	background: #ccccff;
+	min-height: 600px;
+	float: left;
+
+}
+
+.b-style{
+	width: 100px;
+	height: 40px;
+	 background-color:#94CFCD;
+	font-size: 20px;
+	border-radius: 12px;
+	float: right;
+	margin: 3px;
+	font-weight: 15px;
+
+}
+.b-style:hover {
+    background-color:#C1EC5D; /* Green */
+    color: #EC1010;
+}
+
+.b-style-table{
+	width: 70px;
+	height: 20px;
+	background: #E19685
+	font-size: 20px;
+	border-radius: 12px;
+	float: middle;
+	margin: 1px;
+}
+.b-style-table:hover {
+    background-color: #11877B; /* Green */
+    color: white;
+}
+		
+</style>
+<body onload="init()">
+<!-- form creation -->
+<div class="containar">
+	<header class="header-top"> <h1> Student Registration (Localstorage Demo with JSON) </h1></header>
+	<aside class="leftbar">
+		<div>
+			<fieldset>
+				<label for="firstname">First Name :</label>
+				<input type="text" placeholder="Enter your FirstName" id="firstname">
+			</fieldset>
+			<fieldset>
+				<label for="lastname">Last Name :</label>
+				<input type="text" placeholder="Enter your LastName" id="lastname">
+			</fieldset>
+			<fieldset>
+				<label for="roolno">Rool Number :</label>
+				<input type="number" placeholder="Enter your RoolNo" id="roolno">
+			</fieldset>
+			<fieldset>
+				<label for="subject">Subject :</label>
+				<select id = "subject">
+					<option value="C">C</option>
+					<option value="Java">Java</option>
+					<option value="Pyhon">Pyhon</option>
+					<option value="Html-css">Html-css</option>
+				</select>
+			</fieldset>
+			<fieldset>
+				<label for ="submit">&nbsp;</label>
+				<button class="b-style" id ="submit" onclick = "onRegisterPressed()" >Register</button>
+				<button class="b-style" id ="submit" onclick="ClearAll()">Clear</button>	
+			</fieldset>
+
+			<fieldset>
+				<label for="search">Search element  :</label>
+				<input type="text" placeholder="Enter your RoolNo" id="search-data">
+				<label for ="submit">&nbsp;</label>
+				<button class="b-style" id ="submit" onclick = "search()" >Search</button>
+			</fieldset>
+
+		</div>
+	</aside>
+	<!-- Tabel -->
+	<aside class="rightbar">
+		<table id = "regtabel">
+			<thead>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Rool Number</th>
+				<th>Subject</th>
+				<th>Action</th>
+			</thead>
+			<tbody id = "tabelrows">
+				
+			</tbody>
+		</table>
+	</aside>
+
+	<footer ></footer>
+
+</div>
+
+</body>
+</html>
